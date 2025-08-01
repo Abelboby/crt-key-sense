@@ -195,6 +195,94 @@
   .matrix-hover:hover::before {
     left: 100%;
   }
+  
+  /* Custom CRT Terminal Scrollbar */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--terminal-darker));
+    border-radius: 0;
+    border: 1px solid hsl(var(--neon-green) / 0.2);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--neon-green) / 0.6),
+      hsl(var(--neon-green) / 0.4)
+    );
+    border-radius: 0;
+    border: 1px solid hsl(var(--neon-green) / 0.8);
+    box-shadow: 
+      inset 0 1px 0 hsl(var(--neon-green) / 0.3),
+      0 0 10px hsl(var(--neon-green) / 0.2);
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--neon-green) / 0.8),
+      hsl(var(--neon-green) / 0.6)
+    );
+    box-shadow: 
+      inset 0 1px 0 hsl(var(--neon-green) / 0.5),
+      0 0 15px hsl(var(--neon-green) / 0.4);
+  }
+  
+  ::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--neon-green) / 0.9),
+      hsl(var(--neon-green) / 0.7)
+    );
+    box-shadow: 
+      inset 0 2px 4px hsl(var(--neon-green) / 0.3),
+      0 0 20px hsl(var(--neon-green) / 0.5);
+  }
+  
+  ::-webkit-scrollbar-corner {
+    background: hsl(var(--terminal-darker));
+    border: 1px solid hsl(var(--neon-green) / 0.2);
+  }
+  
+  /* Horizontal scrollbar styling */
+  ::-webkit-scrollbar:horizontal {
+    height: 12px;
+  }
+  
+  /* Firefox scrollbar styling */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--neon-green) / 0.6) hsl(var(--terminal-darker));
+  }
+  
+  /* Custom scrollbar for specific components */
+  .terminal-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--electric-blue) / 0.6),
+      hsl(var(--electric-blue) / 0.4)
+    );
+    border: 1px solid hsl(var(--electric-blue) / 0.8);
+    box-shadow: 
+      inset 0 1px 0 hsl(var(--electric-blue) / 0.3),
+      0 0 10px hsl(var(--electric-blue) / 0.2);
+  }
+  
+  .terminal-scroll::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--electric-blue) / 0.8),
+      hsl(var(--electric-blue) / 0.6)
+    );
+    box-shadow: 
+      inset 0 1px 0 hsl(var(--electric-blue) / 0.5),
+      0 0 15px hsl(var(--electric-blue) / 0.4);
+  }
+}
 }
 
 @layer base {
