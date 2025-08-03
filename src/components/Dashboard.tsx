@@ -85,47 +85,69 @@ export function Dashboard() {
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Quick Actions */}
-        <div className="lg:col-span-1">
+        {/* Quick Actions - Commented out for now */}
+        {/* <div className="lg:col-span-1">
           <QuickActions />
-        </div>
+        </div> */}
 
         {/* Recent Activity */}
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-2">
           <RecentActivity />
         </div>
 
-        {/* System Status */}
-        <div className="lg:col-span-1">
+        {/* System Status - Commented out for now */}
+        {/* <div className="lg:col-span-1">
           <SystemStatus />
-        </div>
+        </div> */}
       </div>
 
-      {/* Intent Processing Status */}
-      <Card className="bg-terminal-dark border-neon-green/30 glow-border">
-        <CardHeader>
-          <CardTitle className="text-neon-green font-terminal flex items-center gap-2">
-            <Brain className="w-5 h-5 animate-pulse" />
-            Semantic Processing Engine
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-terminal-darker border border-neon-green/20 rounded-sm">
-              <div className="text-2xl font-bold text-neon-green font-terminal">97.3%</div>
-              <div className="text-sm text-neon-green/70">Intent Accuracy</div>
-            </div>
-            <div className="text-center p-4 bg-terminal-darker border border-electric-blue/20 rounded-sm">
-              <div className="text-2xl font-bold text-electric-blue font-terminal">143ms</div>
-              <div className="text-sm text-electric-blue/70">Avg Response</div>
-            </div>
-            <div className="text-center p-4 bg-terminal-darker border border-cyan-accent/20 rounded-sm">
-              <div className="text-2xl font-bold text-cyan-accent font-terminal">15.2K</div>
-              <div className="text-sm text-cyan-accent/70">Vector DB Size</div>
+      {/* Semantic Processing Engine Footer */}
+      <footer className="mt-12 border-t border-neon-green/20 bg-terminal-black/50 backdrop-blur rounded-lg">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-mono font-bold text-electric-blue flex items-center gap-2">
+              <div className="w-2 h-2 bg-neon-green rounded-full animate-pulse"></div>
+              Semantic Processing Engine
+            </h3>
+            <div className="text-sm text-neon-green/60 font-mono">
+              Status: Online
             </div>
           </div>
-        </CardContent>
-      </Card>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="bg-terminal-black/60 border border-neon-green/20 rounded p-4">
+              <div className="text-xs text-neon-green/60 font-mono mb-1">Vector DB Size</div>
+              <div className="text-lg font-mono text-neon-green">2.4 GB</div>
+              <div className="text-xs text-neon-green/40 font-mono">~1.2M vectors</div>
+            </div>
+            
+            <div className="bg-terminal-black/60 border border-neon-green/20 rounded p-4">
+              <div className="text-xs text-neon-green/60 font-mono mb-1">DB Connection</div>
+              <div className="text-lg font-mono text-neon-green flex items-center gap-2">
+                <div className="w-2 h-2 bg-neon-green rounded-full"></div>
+                Connected
+              </div>
+              <div className="text-xs text-neon-green/40 font-mono">Latency: 12ms</div>
+            </div>
+            
+            <div className="bg-terminal-black/60 border border-neon-green/20 rounded p-4">
+              <div className="text-xs text-neon-green/60 font-mono mb-1">System Uptime</div>
+              <div className="text-lg font-mono text-neon-green">99.7%</div>
+              <div className="text-xs text-neon-green/40 font-mono">42d 18h 23m</div>
+            </div>
+            
+            <div className="bg-terminal-black/60 border border-neon-green/20 rounded p-4">
+              <div className="text-xs text-neon-green/60 font-mono mb-1">Avg Response</div>
+              <div className="text-lg font-mono text-neon-green">147ms</div>
+              <div className="text-xs text-neon-green/40 font-mono">Last 24h</div>
+            </div>
+          </div>
+          
+          <div className="mt-4 text-xs text-neon-green/50 font-mono text-center">
+            Semantic engine metrics • Updates every 30s • Data will be updated in future versions
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
