@@ -24,8 +24,16 @@ export function AddKeyModal({ isOpen, onClose }: AddKeyModalProps) {
     name: '',
     service: '',
     apiKey: '',
+    token: '',
     description: '',
+    template: '',
     scope: '',
+    maxRequestsPerDay: '',
+    maxRequestsPerWeek: '',
+    maxTokensPerDay: '',
+    maxPayloadKb: '',
+    expiryDate: '',
+    allowedOrigins: '',
   });
 
   const [completionPercentage, setCompletionPercentage] = useState(0);
@@ -47,7 +55,7 @@ export function AddKeyModal({ isOpen, onClose }: AddKeyModalProps) {
     // Calculate completion percentage
     const filled = Object.values({ ...formData, [field]: value })
       .filter(v => v.length > 0).length;
-    setCompletionPercentage((filled / 5) * 100);
+    setCompletionPercentage((filled / 13) * 100);
   };
 
   const getKeyStrength = (key: string) => {
@@ -166,6 +174,133 @@ export function AddKeyModal({ isOpen, onClose }: AddKeyModalProps) {
               placeholder="Additional notes about this API key..."
               className="terminal-input h-20 resize-none"
             />
+          </div>
+
+          {/* Token & Template */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-neon-green font-terminal text-sm">
+                Token
+              </Label>
+              <Input
+                value={formData.token}
+                onChange={(e) => handleInputChange('token', e.target.value)}
+                placeholder="e.g., eca8d79e7cf3494f"
+                className="terminal-input font-mono"
+              />
+              <p className="text-xs text-neon-green/60 font-terminal">
+                Unique identifier for this API key
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-neon-green font-terminal text-sm">
+                Template
+              </Label>
+              <Input
+                value={formData.template}
+                onChange={(e) => handleInputChange('template', e.target.value)}
+                placeholder="e.g., gpt4-advanced"
+                className="terminal-input"
+              />
+              <p className="text-xs text-neon-green/60 font-terminal">
+                API template or configuration preset
+              </p>
+            </div>
+          </div>
+
+          {/* Rate Limits */}
+          <div className="space-y-4">
+            <Label className="text-neon-green font-terminal text-base">
+              Rate Limits & Quotas
+            </Label>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-neon-green font-terminal text-sm">
+                  Max Requests/Day
+                </Label>
+                <Input
+                  type="number"
+                  value={formData.maxRequestsPerDay}
+                  onChange={(e) => handleInputChange('maxRequestsPerDay', e.target.value)}
+                  placeholder="e.g., 500"
+                  className="terminal-input"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-neon-green font-terminal text-sm">
+                  Max Requests/Week
+                </Label>
+                <Input
+                  type="number"
+                  value={formData.maxRequestsPerWeek}
+                  onChange={(e) => handleInputChange('maxRequestsPerWeek', e.target.value)}
+                  placeholder="e.g., 2000"
+                  className="terminal-input"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-neon-green font-terminal text-sm">
+                  Max Tokens/Day
+                </Label>
+                <Input
+                  type="number"
+                  value={formData.maxTokensPerDay}
+                  onChange={(e) => handleInputChange('maxTokensPerDay', e.target.value)}
+                  placeholder="e.g., 50000"
+                  className="terminal-input"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-neon-green font-terminal text-sm">
+                  Max Payload (KB)
+                </Label>
+                <Input
+                  type="number"
+                  value={formData.maxPayloadKb}
+                  onChange={(e) => handleInputChange('maxPayloadKb', e.target.value)}
+                  placeholder="e.g., 1000"
+                  className="terminal-input"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Expiry & Origins */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-neon-green font-terminal text-sm">
+                Expiry Date
+              </Label>
+              <Input
+                type="datetime-local"
+                value={formData.expiryDate}
+                onChange={(e) => handleInputChange('expiryDate', e.target.value)}
+                className="terminal-input"
+              />
+              <p className="text-xs text-neon-green/60 font-terminal">
+                When this API key expires
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-neon-green font-terminal text-sm">
+                Allowed Origins
+              </Label>
+              <Textarea
+                value={formData.allowedOrigins}
+                onChange={(e) => handleInputChange('allowedOrigins', e.target.value)}
+                placeholder="https://myapp.com, https://staging.myapp.com"
+                className="terminal-input h-16 resize-none"
+              />
+              <p className="text-xs text-neon-green/60 font-terminal">
+                Comma-separated list of allowed domains
+              </p>
+            </div>
           </div>
 
           {/* Security Notice */}
