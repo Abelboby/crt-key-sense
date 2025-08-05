@@ -47,9 +47,9 @@ const Login = () => {
   const handleDemoSelect = (demoId: string) => {
     const demo = demoAccounts.find(d => d.userId === demoId);
     if (demo) {
-      setUserId(demo.userId);
-      setPassword(demo.password);
-      setSelectedDemo(demoId);
+      setUserId(() => demo.userId);
+      setPassword(() => demo.password);
+      setSelectedDemo(() => demoId);
       setError("");
     }
   };
@@ -59,10 +59,11 @@ const Login = () => {
     setError("");
     try {
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const payload = { userId, password };
       const res = await fetch(`${backendUrl}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, password })
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
       if (data.success && data.token) {
@@ -208,10 +209,13 @@ const Login = () => {
                     variant="terminal"
                     size="sm"
                     className="text-xs"
-                    onClick={e => {
+                    onClick={async e => {
                       e.stopPropagation();
                       handleDemoSelect(demo.userId);
-                      setTimeout(handleLogin, 200); // slight delay for autofill
+                      // Wait for React state to update before login
+                      setTimeout(() => {
+                        handleLogin();
+                      }, 100);
                     }}
                     disabled={isLoading}
                   >
