@@ -17,6 +17,34 @@ import {
 } from 'lucide-react';
 
 export function Dashboard() {
+  // Demo credentials (default to demo1)
+  const demoAccounts = [
+    { userId: "demo1", password: "pass1" },
+    { userId: "demo2", password: "pass2" },
+    { userId: "demo3", password: "pass3" }
+  ];
+  const demoCreds = demoAccounts[0];
+
+  const handleLogout = async () => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const payload = { userId: demoCreds.userId, password: demoCreds.password };
+    try {
+      const res = await fetch(`${backendUrl}/auth/logout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.success) {
+        localStorage.removeItem("session_token");
+        window.location.href = "/";
+      } else {
+        alert(data.error || "Logout failed");
+      }
+    } catch (e) {
+      alert("Network error");
+    }
+  };
   const stats = [
     {
       title: 'Total API Keys',
