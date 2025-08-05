@@ -14,13 +14,13 @@ const Landing = () => {
             <Terminal className="h-8 w-8 text-electric-blue" />
             <span className="text-xl font-mono font-bold text-neon-green">SmartAPIKey</span>
           </div>
-          <Button 
+          {/* <Button 
             variant="cyber" 
             onClick={() => navigate('/login')}
             className="font-mono"
           >
             Try Demo
-          </Button>
+          </Button> */}
         </div>
       </header>
 
