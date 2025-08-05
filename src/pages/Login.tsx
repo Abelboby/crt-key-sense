@@ -10,36 +10,28 @@ import { useToast } from "@/hooks/use-toast";
 
 const demoAccounts = [
   {
-    id: "demo1",
-    username: "admin_demo",
+    userId: "demo1",
+    password: "pass1",
     role: "Administrator",
     status: "available",
     lastUsed: "2 hours ago",
     features: ["Full Access", "Analytics", "Key Management"]
   },
   {
-    id: "demo2", 
-    username: "dev_demo",
+    userId: "demo2",
+    password: "pass2",
     role: "Developer",
-    status: "in_use",
+    status: "available",
     lastUsed: "5 minutes ago",
     features: ["API Access", "Intent Queries", "Basic Analytics"]
   },
   {
-    id: "demo3",
-    username: "viewer_demo", 
+    userId: "demo3",
+    password: "pass3",
     role: "Viewer",
     status: "available",
     lastUsed: "1 day ago",
     features: ["Read Only", "View Analytics", "Intent History"]
-  },
-  {
-    id: "demo4",
-    username: "test_demo",
-    role: "Tester",
-    status: "maintenance",
-    lastUsed: "30 minutes ago", 
-    features: ["Testing Suite", "API Playground", "Debug Mode"]
   }
 ];
 
@@ -48,82 +40,56 @@ const Login = () => {
   const { toast } = useToast();
   const [selectedDemo, setSelectedDemo] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [userId, setUserId] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "available":
-        return <CheckCircle2 className="h-4 w-4 text-neon-green" />;
-      case "in_use":
-        return <Clock className="h-4 w-4 text-amber-400" />;
-      case "maintenance":
-        return <XCircle className="h-4 w-4 text-red-400" />;
-      default:
-        return <CheckCircle2 className="h-4 w-4 text-neon-green" />;
+  const handleDemoSelect = (demoId: string) => {
+    const demo = demoAccounts.find(d => d.userId === demoId);
+    if (demo) {
+      setUserId(demo.userId);
+      setPassword(demo.password);
+      setSelectedDemo(demoId);
+      setError("");
     }
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case "available":
-        return "Available";
-      case "in_use":
-        return "In Use";
-      case "maintenance":
-        return "Maintenance";
-      default:
-        return "Unknown";
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "available":
-        return "bg-neon-green/20 text-neon-green border-neon-green/40";
-      case "in_use":
-        return "bg-amber-400/20 text-amber-400 border-amber-400/40";
-      case "maintenance":
-        return "bg-red-400/20 text-red-400 border-red-400/40";
-      default:
-        return "bg-neon-green/20 text-neon-green border-neon-green/40";
-    }
-  };
-
-  const handleDemoLogin = async (demoId: string) => {
-    const demo = demoAccounts.find(d => d.id === demoId);
-    if (!demo) return;
-
-    if (demo.status !== "available") {
+  const handleLogin = async () => {
+    setIsLoading(true);
+    setError("");
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const res = await fetch(`${backendUrl}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, password })
+      });
+      const data = await res.json();
+      if (data.success && data.token) {
+        localStorage.setItem("session_token", data.token);
+        toast({
+          title: "Login Successful",
+          description: `Welcome, ${userId}!`,
+        });
+        navigate("/dashboard");
+      } else {
+        setError(data.error || "Login failed");
+        toast({
+          title: "Login Failed",
+          description: data.error || "Invalid credentials",
+          variant: "destructive",
+        });
+      }
+    } catch (e) {
+      setError("Network error");
       toast({
-        title: "Account Unavailable",
-        description: `${demo.username} is currently ${demo.status}`,
+        title: "Login Failed",
+        description: "Network error",
         variant: "destructive",
       });
-      return;
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(true);
-    
-    // Simulate login process
-    setTimeout(() => {
-      toast({
-        title: "Login Successful",
-        description: `Welcome, ${demo.username}!`,
-      });
-      navigate("/dashboard");
-    }, 1500);
-  };
-
-  const handleRegularLogin = async () => {
-    setIsLoading(true);
-    
-    // Simulate login process
-    setTimeout(() => {
-      toast({
-        title: "Login Successful",
-        description: "Welcome to SmartAPIKey!",
-      });
-      navigate("/dashboard");
-    }, 1500);
   };
 
   return (
@@ -150,11 +116,14 @@ const Login = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="username" className="text-neon-green font-mono">Username</Label>
+                <Label htmlFor="userId" className="text-neon-green font-mono">User ID</Label>
                 <Input
-                  id="username"
-                  placeholder="Enter username"
+                  id="userId"
+                  value={userId}
+                  onChange={e => setUserId(e.target.value)}
+                  placeholder="Enter userId"
                   className="bg-terminal-black border-neon-green/40 text-neon-green font-mono"
+                  autoComplete="username"
                 />
               </div>
               <div className="space-y-2">
@@ -162,15 +131,19 @@ const Login = () => {
                 <Input
                   id="password"
                   type="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
                   placeholder="Enter password"
                   className="bg-terminal-black border-neon-green/40 text-neon-green font-mono"
+                  autoComplete="current-password"
                 />
               </div>
+              {error && <div className="text-red-400 font-mono text-xs">{error}</div>}
               <Button 
                 variant="cyber" 
                 className="w-full font-mono"
-                onClick={handleRegularLogin}
-                disabled={isLoading}
+                onClick={handleLogin}
+                disabled={isLoading || !userId || !password}
               >
                 {isLoading ? "Authenticating..." : "Login"}
               </Button>
@@ -191,33 +164,28 @@ const Login = () => {
         <div className="space-y-4">
           {demoAccounts.map((demo) => (
             <Card 
-              key={demo.id}
+              key={demo.userId}
               className={`bg-terminal-black/60 border-neon-green/20 hover:border-electric-blue/40 transition-colors cursor-pointer ${
-                selectedDemo === demo.id ? 'border-electric-blue/60 bg-electric-blue/5' : ''
+                selectedDemo === demo.userId ? 'border-electric-blue/60 bg-electric-blue/5' : ''
               }`}
-              onClick={() => setSelectedDemo(demo.id)}
+              onClick={() => handleDemoSelect(demo.userId)}
             >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-electric-blue" />
-                    <span className="font-mono text-neon-green font-bold">{demo.username}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {getStatusIcon(demo.status)}
+                    <span className="font-mono text-neon-green font-bold">{demo.userId}</span>
                   </div>
                 </div>
-                
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm text-neon-green/60 font-mono">{demo.role}</span>
                   <Badge 
                     variant="outline" 
-                    className={`text-xs font-mono ${getStatusColor(demo.status)}`}
+                    className="text-xs font-mono bg-neon-green/10 text-neon-green/70 border-neon-green/30"
                   >
-                    {getStatusText(demo.status)}
+                    Available
                   </Badge>
                 </div>
-
                 <div className="mb-3">
                   <p className="text-xs text-neon-green/50 font-mono mb-1">Features:</p>
                   <div className="flex flex-wrap gap-1">
@@ -232,7 +200,6 @@ const Login = () => {
                     ))}
                   </div>
                 </div>
-
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-neon-green/50 font-mono">
                     Last used: {demo.lastUsed}
@@ -241,13 +208,14 @@ const Login = () => {
                     variant="terminal"
                     size="sm"
                     className="text-xs"
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
-                      handleDemoLogin(demo.id);
+                      handleDemoSelect(demo.userId);
+                      setTimeout(handleLogin, 200); // slight delay for autofill
                     }}
-                    disabled={demo.status !== "available" || isLoading}
+                    disabled={isLoading}
                   >
-                    {isLoading && selectedDemo === demo.id ? "Connecting..." : "Use Account"}
+                    {isLoading && selectedDemo === demo.userId ? "Connecting..." : "Use Account"}
                   </Button>
                 </div>
               </CardContent>
