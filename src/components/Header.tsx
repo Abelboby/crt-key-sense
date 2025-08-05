@@ -3,8 +3,30 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { SidebarTrigger } from './ui/sidebar';
 import { Terminal, Shield, Clock, User, LogOut } from 'lucide-react';
+import { Copy } from 'lucide-react';
 
 export function Header() {
+  // Get session token from localStorage
+  const [apiToken, setApiToken] = useState<string | null>(null);
+  useEffect(() => {
+    setApiToken(localStorage.getItem("session_token"));
+    // Listen for token changes (e.g., after login)
+    window.addEventListener("storage", () => {
+      setApiToken(localStorage.getItem("session_token"));
+    });
+    return () => {
+      window.removeEventListener("storage", () => {
+        setApiToken(localStorage.getItem("session_token"));
+      });
+    };
+  }, []);
+
+  const handleCopyToken = () => {
+    if (apiToken) {
+      navigator.clipboard.writeText(apiToken);
+      alert("API token copied to clipboard!");
+    }
+  };
   // Demo credentials (default to demo1)
   const demoAccounts = [
     { userId: "demo1", password: "pass1" },
@@ -85,6 +107,19 @@ export function Header() {
             <User className="w-4 h-4" />
             <span className="hidden md:inline">dev@terminal</span>
           </Button>
+          {apiToken && (
+            <div className="flex items-center gap-1 bg-terminal-dark border border-neon-green/40 rounded px-2 py-1">
+              <span className="text-xs font-mono text-neon-green truncate max-w-[120px]" title={apiToken}>{apiToken}</span>
+              <button
+                type="button"
+                className="inline-flex items-center px-2 py-1 text-xs font-mono text-neon-green border border-neon-green/40 rounded hover:bg-neon-green/10 focus:outline-none focus:ring-2 focus:ring-neon-green/50"
+                onClick={handleCopyToken}
+                title="Copy API Token"
+              >
+                <Copy className="w-4 h-4" />
+              </button>
+            </div>
+          )}
           <Button variant="outline" size="sm" onClick={handleLogout}>
             <LogOut className="w-4 h-4" />
           </Button>
